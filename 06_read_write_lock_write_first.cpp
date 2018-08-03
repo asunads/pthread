@@ -1,5 +1,6 @@
 #include <iostream>
 #include <pthread.h>
+#include <unistd.h>
 using namespace std;
 int thread_num = 4;
 pthread_mutex_t mtx;
@@ -24,7 +25,8 @@ void write_lock()
 	pthread_mutex_lock(&mtx);
 	write_num++;
 	while(read_num > 0) pthread_cond_wait(&read_cond,&mtx);
-	cout<<"w";
+	cout<<"w"<<endl;
+	sleep(1);
 	write_num--;
 	if(write_num == 0)
 		pthread_cond_broadcast(&write_cond);
@@ -32,7 +34,7 @@ void write_lock()
 }
 void * worker(void *in)
 {
-	for(int i = 0;i<10000;i++)
+	for(int i = 0;i<300;i++)
 	{
 		if(i % 30 == 0){
 			write_lock();
